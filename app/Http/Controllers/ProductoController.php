@@ -16,6 +16,7 @@ class ProductoController extends Controller
     public function store(Request $request)
     {
         $producto = Producto::create($request->all());
+        //holi
         return response()->json($producto, 201);
     }
 
