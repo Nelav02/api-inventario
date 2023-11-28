@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ProveedorController;
 use Illuminate\Http\Request;
+use App\Models\Proveedor;
+
 
 class ProveedorController extends Controller
 {
@@ -15,24 +17,47 @@ class ProveedorController extends Controller
 
     public function store(Request $request)
     {
-        $proveedor = Proveedor::create($request->all());
-        return response()->json($proveedor, 201);
+        $proveedor = new Proveedor();
+        $proveedor->nombre = $request->input('nombre');
+        $proveedor->lugar = $request->input('lugar');
+        $proveedor->save();
+        return response()->json(['mensaje' => 'Proveedor registrado con éxito'], 201);
     }
 
     public function show(string $id)
     {
-        return $proveedor;
+        $proveedor = Proveedor::find($id);
+
+        if (!$proveedor) {
+            return response()->json(['mensaje' => 'Proveedor no encontrado'], 404);
+        }
+        return response()->json([$proveedor], 200);
     }
 
     public function update(Request $request, string $id)
     {
-        $proveedor->update($request->all());
-        return response()->json($proveedor, 200);
+        $proveedor = Proveedor::find($id);
+
+        if (!$proveedor) {
+            return response()->json(['mensaje' => 'Proveedor no encontrado'], 404);
+        }
+
+        $proveedor->nombre = $request->input('nombre');
+        $proveedor->lugar = $request->input('lugar');
+        $proveedor->save();
+
+        return response()->json(['mensaje' => 'Proveedor actualizado con éxito'], 200);
     }
 
     public function destroy(string $id)
     {
+        $proveedor = Proveedor::find($id);
+
+        if (!$proveedor) {
+            return response()->json(['mensaje' => 'Proveedor no encontrado'], 404);
+        }
+
         $proveedor->delete();
-        return response()->json(null, 204);
+        return response()->json(['mensaje' => 'Proveedor eliminado con éxito'], 200);
     }
 }
