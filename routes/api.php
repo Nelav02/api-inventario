@@ -48,4 +48,9 @@ Route::delete('/categoria/{id}', [CategoriaController::class, 'destroy']);
 Route::get('/categoria', [CategoriaController::class, 'index']);
 Route::get('/categoria/{id}', [CategoriaController::class, 'show']);
 
+//FUNCIONALIDADES
+Route::get('/productos/{identificador}', [ProductoController::class, 'verStock']);
+Route::get('/productosXvencer', [ProductoController::class, 'productosPorVencer']);
+
+
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ProductoController;
 use App\Models\Producto;
+use Carbon\Carbon;
 
 class ProductoController extends Controller
 {
@@ -66,5 +67,47 @@ class ProductoController extends Controller
 
         $producto->delete();
         return response()->json(['mensaje' => 'Producto eliminado con éxito'], 200);
+    }
+
+    public function verStock($identificador)
+    {
+        $producto = Producto::find($identificador);
+
+        if (!$producto) {
+            $productos = Producto::where('nombre', 'like', '%' . $identificador . '%')->get();
+
+            if ($productos->isEmpty()) {
+                return response()->json(['mensaje' => 'Productos no encontrados'], 404);
+            }
+
+            $respuesta = $productos->map(function ($producto) {
+                return ['nombre' => $producto->nombre, 'stock' => $producto->stock];
+            });
+
+            return response()->json($respuesta, 200);
+        }
+
+        return response()->json(['nombre' => $producto->nombre, 'stock' => $producto->stock], 200);
+    }
+
+    public function productosPorVencer(Request $request)
+    {
+        $diasAproxVencimiento = $request->input('dias_aprox_vencimiento', 7);
+        $fechaActual = Carbon::now();
+        $fechaLimite = $fechaActual->copy()->addDays($diasAproxVencimiento);
+
+        $productosPorVencer = Producto::where('fechaVencimiento', '>', $fechaActual)
+            ->where('fechaVencimiento', '<=', $fechaLimite)
+            ->get();
+
+        if ($productosPorVencer->isEmpty()) {
+            return response()->json(['mensaje' => "No hay productos por vencer en los próximos $diasAproxVencimiento días"], 404);
+        }
+
+        $respuesta = $productosPorVencer->map(function ($producto) {
+            return ['nombre' => $producto->nombre, 'fechaVencimiento' => $producto->fechaVencimiento];
+        });
+
+        return response()->json($respuesta, 200);
     }
 }
