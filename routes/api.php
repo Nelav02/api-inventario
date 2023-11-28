@@ -6,8 +6,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ProveedorController;
 use App\Http\Controllers\CategoriaController;
-
-
+use App\Http\Controllers\VentaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,9 +47,22 @@ Route::delete('/categoria/{id}', [CategoriaController::class, 'destroy']);
 Route::get('/categoria', [CategoriaController::class, 'index']);
 Route::get('/categoria/{id}', [CategoriaController::class, 'show']);
 
+Route::post('/venta/registrar', [VentaController::class, 'store']);
+Route::put('/venta/{id}', [VentaController::class, 'update']);
+Route::delete('/venta/{id}', [VentaController::class, 'destroy']);
+Route::get('/venta', [VentaController::class, 'index']);
+Route::get('/venta/{id}', [VentaController::class, 'show']);
+
+
 //FUNCIONALIDADES
 Route::get('/productos/{identificador}', [ProductoController::class, 'verStock']);
 Route::get('/productosXvencer', [ProductoController::class, 'productosPorVencer']);
+Route::get('/venta/verFactura/{id}', [VentaController::class, 'verFactura']);
+Route::get('/producto/verXcategoria/{nombreCategoria}', [ProductoController::class, 'productosPorCategoria']);
+Route::get('/venta/verXanio/{anio?}', [VentaController::class, 'verXanio']);
+
+
+
 
 
 
