@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\Http\Controllers\ProductoController;
 use App\Models\Producto;
+use App\Models\Categoria;
 use Carbon\Carbon;
 
 class ProductoController extends Controller
@@ -109,5 +111,23 @@ class ProductoController extends Controller
         });
 
         return response()->json($respuesta, 200);
+    }
+
+    public function productosPorCategoria($nombreCategoria)
+    {
+        try {
+            $categoria = Categoria::where('nombre', $nombreCategoria)->firstOrFail();
+    
+            $productos = Producto::where('categorias_id', $categoria->id)->get();
+    
+            if ($productos->isEmpty()) {
+                return response()->json(['mensaje' => 'No hay productos disponibles para esta categoría'], 404);
+            }
+    
+            return response()->json(['productos' => $productos], 200);
+
+        } catch (ModelNotFoundException $exception) {
+            return response()->json(['mensaje' => 'Categoría no encontrada'], 404);
+        }
     }
 }
