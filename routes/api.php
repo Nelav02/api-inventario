@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::apiResource('productos', ProductoController::class);
+Route::apiResource('proveedores', ProveedorController::class);
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
